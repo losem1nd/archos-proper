@@ -3713,6 +3713,18 @@ body.low-spec .tab-content.tab-leave > * > * {
 
 .os-app-icon .app-emoji {
     font-size: 30px;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.os-app-icon .app-emoji img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    display: block;
 }
 
 .os-app-icon .app-name {
@@ -4067,10 +4079,20 @@ body.low-spec .tab-content.tab-leave > * > * {
 
       <section id="osShell" class="os-shell" aria-label="ArchOS Desktop">
         <div id="desktopArea">
-          <div id="desktopAppsGrid" aria-label="Desktop apps"></div>
+          <div id="desktopAppsGrid" aria-label="Desktop apps">
+            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="math"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/calculator.png" alt=""></span><span class="app-name">Math Calculator</span></button></div>
+            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="prefs"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/settings.png" alt=""></span><span class="app-name">Settings</span></button></div>
+            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="about"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/info.png" alt=""></span><span class="app-name">About</span></button></div>
+            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="notes"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/note.png" alt=""></span><span class="app-name">Notes</span></button></div>
+            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="terminal"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/console.png" alt=""></span><span class="app-name">Terminal</span></button></div>
+          </div>
         </div>
         <div id="dockBar" aria-label="Dock">
-          <div id="dockAppsGrid"></div>
+          <div id="dockAppsGrid">
+            <button type="button" class="os-app-icon dock-app-icon" data-app-id="math"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/calculator.png" alt=""></span><span class="app-name">Math Calculator</span></button>
+            <button type="button" class="os-app-icon dock-app-icon" data-app-id="prefs"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/settings.png" alt=""></span><span class="app-name">Settings</span></button>
+            <button type="button" class="os-app-icon dock-app-icon" data-app-id="terminal"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/console.png" alt=""></span><span class="app-name">Terminal</span></button>
+          </div>
         </div>
       </section>
 
@@ -4389,11 +4411,11 @@ body.low-spec .tab-content.tab-leave > * > * {
       const DESKTOP_SLOT_COUNT = 48;
       let desktopLayout = [];
       const appsRegistry = [
-          { id: 'math', name: 'Math Calculator', icon: '🧮', launcher: 'openMath', dock: true },
-          { id: 'prefs', name: 'Settings', icon: '⚙️', launcher: 'openSettings', dock: true },
-          { id: 'about', name: 'About', icon: 'ℹ️', launcher: 'openAbout', dock: false },
-          { id: 'notes', name: 'Notes', icon: '📝', launcher: 'openNotes', dock: false },
-          { id: 'terminal', name: 'Terminal', icon: '⌨️', launcher: 'openTerminal', dock: true }
+          { id: 'math', name: 'Math Calculator', icon: '🧮', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/calculator.png', launcher: 'openMath', dock: true },
+          { id: 'prefs', name: 'Settings', icon: '⚙️', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/settings.png', launcher: 'openSettings', dock: true },
+          { id: 'about', name: 'About', icon: 'ℹ️', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/info.png', launcher: 'openAbout', dock: false },
+          { id: 'notes', name: 'Notes', icon: '📝', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/note.png', launcher: 'openNotes', dock: false },
+          { id: 'terminal', name: 'Terminal', icon: '⌨️', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/console.png', launcher: 'openTerminal', dock: true }
       ];
       const ARCH_RECOVERY_KEY = 'archRecoveryV1';
       const ARCH_RECOVERY_MAX_HISTORY = 30;
@@ -5957,6 +5979,17 @@ body.low-spec .tab-content.tab-leave > * > * {
         }, 360);
     }
 
+
+    function bindFallbackAppIconLaunchers() {
+        document.querySelectorAll('#desktopAppsGrid .os-app-icon, #dockAppsGrid .os-app-icon').forEach((btn) => {
+            if (btn.dataset.bound === '1') return;
+            const appId = btn.dataset.appId;
+            if (!appId) return;
+            btn.dataset.bound = '1';
+            btn.addEventListener('click', () => launchApp(appId));
+        });
+    }
+
     function initializeDesktopLayout() {
         const appIds = appsRegistry.map(app => app.id);
         if (!desktopLayout.length) {
@@ -5977,6 +6010,7 @@ body.low-spec .tab-content.tab-leave > * > * {
         const dockGrid = document.getElementById('dockAppsGrid');
         if (!desktopGrid || !dockGrid) return;
 
+        bindFallbackAppIconLaunchers();
         initializeDesktopLayout();
         renderDesktopGrid(desktopGrid);
         renderDockGrid(dockGrid);
@@ -6043,7 +6077,7 @@ body.low-spec .tab-content.tab-leave > * > * {
             btn.className = 'os-app-icon dock-app-icon';
             btn.dataset.appId = app.id;
             btn.innerHTML = `
-              <span class="app-emoji" aria-hidden="true">${app.icon}</span>
+              <span class="app-emoji" aria-hidden="true">${app.iconUrl ? `<img src="${app.iconUrl}" alt="">` : app.icon}</span>
               <span class="app-name">${app.name}</span>
             `;
             btn.addEventListener('click', () => launchApp(app.id));
@@ -6125,7 +6159,7 @@ body.low-spec .tab-content.tab-leave > * > * {
                     btn.dataset.appId = app.id;
                     btn.draggable = true;
                     btn.innerHTML = `
-                      <span class="app-emoji" aria-hidden="true">${app.icon}</span>
+                      <span class="app-emoji" aria-hidden="true">${app.iconUrl ? `<img src="${app.iconUrl}" alt="">` : app.icon}</span>
                       <span class="app-name" title="${app.name}">${app.name}</span>
                     `;
 
