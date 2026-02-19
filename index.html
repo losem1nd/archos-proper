@@ -3546,8 +3546,10 @@ body.low-spec .tab-content.tab-leave > * > * {
 .main-content {
     flex: 1 1 auto;
     min-width: 0;
-    min-height: 0;
-    height: 100%;
+    min-height: 100svh;
+    min-height: 100dvh;
+    height: 100svh;
+    height: 100dvh;
 }
 
 /* OS shell layout (keep legacy main-content DOM for compatibility) */
@@ -3558,9 +3560,11 @@ body.low-spec .tab-content.tab-leave > * > * {
 .main-content .os-shell {
     position: relative;
     flex: 1 1 auto;
-    min-height: 0;
-    height: 100%;
-    border-radius: 18px;
+    min-height: 100svh;
+    min-height: 100dvh;
+    height: 100svh;
+    height: 100dvh;
+    border-radius: 0;
     overflow: hidden;
     background: radial-gradient(circle at top right, rgba(122, 162, 255, 0.25), transparent 45%),
                 radial-gradient(circle at bottom left, rgba(110, 211, 255, 0.2), transparent 45%),
@@ -3640,9 +3644,17 @@ body.low-spec .tab-content.tab-leave > * > * {
 }
 
 @media (max-width: 768px) {
+    .app-container,
+    .main-content,
+    .main-content .os-shell {
+        min-height: 100svh;
+        min-height: 100dvh;
+        height: 100svh;
+        height: 100dvh;
+    }
+
     .main-content .os-shell {
         padding: 16px 12px calc(132px + env(safe-area-inset-bottom));
-        height: 100%;
     }
 
     #desktopAppsGrid {
