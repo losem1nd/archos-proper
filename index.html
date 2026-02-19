@@ -3613,6 +3613,11 @@ body.low-spec .tab-content.tab-leave > * > * {
     aspect-ratio: 1 / 1;
 }
 
+#desktopAppsGrid .os-app-icon {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+}
+
 .os-app-icon:hover {
     background: rgba(255, 255, 255, 0.12);
 }
@@ -3644,13 +3649,22 @@ body.low-spec .tab-content.tab-leave > * > * {
 #dockAppsGrid {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 6px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 #dockAppsGrid .os-app-icon {
-    min-width: 72px;
-    padding: 8px 6px;
+    min-width: 56px;
+    padding: 6px;
+    gap: 2px;
+    flex: 0 0 auto;
+}
+
+#dockAppsGrid .os-app-icon .app-name {
+    display: none;
 }
 
 @media (max-width: 768px) {
