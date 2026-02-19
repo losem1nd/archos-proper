@@ -730,6 +730,12 @@ code, .modern-details {
     transform: scale(1) translateY(0);
 }
 
+/* Failsafe: keep shell visible even if intro JS is interrupted */
+.app-container.force-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
 .glass-panel, .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(calc(var(--motion-glass-blur, 22px) * 0.8));
@@ -5423,6 +5429,19 @@ body.low-spec .tab-content.tab-leave > * > * {
     // ==========================================
 
     document.addEventListener("DOMContentLoaded", () => {
+        const failsafeBootTimer = window.setTimeout(() => {
+            const appShell = document.querySelector('.app-container');
+            if (appShell && !appShell.classList.contains('app-ready')) {
+                appShell.classList.add('app-ready', 'force-visible');
+            }
+            const introOverlay = document.getElementById('intro-screen');
+            if (introOverlay && introOverlay.style.display !== 'none') {
+                introOverlay.classList.add('fade-out');
+                window.setTimeout(() => {
+                    introOverlay.style.display = 'none';
+                }, 220);
+            }
+        }, 2600);
 
         // --- A. LOAD GAME ---
         // loadGame();
@@ -5446,6 +5465,7 @@ body.low-spec .tab-content.tab-leave > * > * {
                     }
                     setTimeout(() => {
                         if (app) app.classList.add('app-ready');
+                        window.clearTimeout(failsafeBootTimer);
                         intro.classList.add('fade-out');
                         setTimeout(() => {
                             intro.style.display = 'none';
