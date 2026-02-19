@@ -730,12 +730,6 @@ code, .modern-details {
     transform: scale(1) translateY(0);
 }
 
-/* Failsafe: keep shell visible even if intro JS is interrupted */
-.app-container.force-visible {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
 .glass-panel, .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(calc(var(--motion-glass-blur, 22px) * 0.8));
@@ -1044,90 +1038,9 @@ body.dark-theme .search-bar { background: rgba(255,255,255,0.1); }
 
 .settings-wrapper {
     width: 100%;
-    max-width: 980px;
+    max-width: 800px;
     padding: 20px;
     position: relative;
-}
-
-.settings-shell {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 16px;
-    min-height: min(78vh, 640px);
-}
-
-.settings-sidebar-nav {
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 14px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.settings-nav-item {
-    width: 100%;
-    border: 1px solid transparent;
-    background: transparent;
-    color: #eaf2ff;
-    border-radius: 10px;
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    text-align: left;
-    transition: background-color 220ms cubic-bezier(0.22, 1, 0.36, 1), border-color 220ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.settings-nav-item img {
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
-}
-
-.settings-nav-item.active {
-    background: rgba(60, 121, 255, 0.32);
-    border-color: rgba(112, 167, 255, 0.7);
-}
-
-.settings-content-pane {
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 14px;
-    padding: 12px;
-    overflow: auto;
-}
-
-.settings-empty-state {
-    min-height: 220px;
-    display: grid;
-    place-items: center;
-    color: rgba(235, 244, 255, 0.82);
-    font-weight: 600;
-}
-
-.settings-page-enter-up { animation: settingsPageEnterUp 320ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-.settings-page-enter-down { animation: settingsPageEnterDown 320ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-.settings-page-leave-up { animation: settingsPageLeaveUp 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-.settings-page-leave-down { animation: settingsPageLeaveDown 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-
-@keyframes settingsPageEnterUp { from { opacity: 0; transform: translateY(14px);} to { opacity: 1; transform: translateY(0);} }
-@keyframes settingsPageEnterDown { from { opacity: 0; transform: translateY(-14px);} to { opacity: 1; transform: translateY(0);} }
-@keyframes settingsPageLeaveUp { from { opacity: 1; transform: translateY(0);} to { opacity: 0; transform: translateY(-10px);} }
-@keyframes settingsPageLeaveDown { from { opacity: 1; transform: translateY(0);} to { opacity: 0; transform: translateY(10px);} }
-
-@media (max-width: 768px) {
-    .settings-shell {
-        grid-template-columns: 1fr;
-        min-height: auto;
-    }
-
-    .settings-sidebar-nav {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
 
 .settings-content-box {
@@ -1218,8 +1131,6 @@ body.dark-theme .search-bar { background: rgba(255,255,255,0.1); }
 }
 
 .close-alert-btn:hover { background: rgba(0,0,0,0.2); }
-
-.close-overlay img { width: 18px; height: 18px; display: block; }
 
 .top-center-alert > span {
     display: block;
@@ -2363,8 +2274,8 @@ body.lock-selection textarea {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    padding: 8px 12px;
+    gap: 10px;
+    padding: 12px 14px;
     background: rgba(255, 255, 255, 0.08);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     cursor: move;
@@ -2380,9 +2291,9 @@ body.lock-selection textarea {
 }
 
 .system-window-close {
-    width: 24px;
-    height: 24px;
-    border-radius: 7px;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.22);
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
@@ -2391,7 +2302,7 @@ body.lock-selection textarea {
 }
 
 .system-window-body {
-    padding: 8px 12px 12px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -3674,26 +3585,12 @@ body.low-spec .tab-content.tab-leave > * > * {
 
 #desktopAppsGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-    grid-auto-rows: 104px;
-    gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 16px;
     align-content: start;
 }
 
-.desktop-slot {
-    border-radius: 14px;
-    min-height: 104px;
-}
-
-.desktop-slot.drop-target {
-    outline: 2px dashed rgba(186, 217, 255, 0.8);
-    outline-offset: -4px;
-    background: rgba(255, 255, 255, 0.06);
-}
-
 .os-app-icon {
-    width: 92px;
-    height: 102px;
     border: 0;
     background: transparent;
     color: #eef4ff;
@@ -3702,7 +3599,6 @@ body.low-spec .tab-content.tab-leave > * > * {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     gap: 6px;
     cursor: pointer;
 }
@@ -3713,29 +3609,13 @@ body.low-spec .tab-content.tab-leave > * > * {
 
 .os-app-icon .app-emoji {
     font-size: 30px;
-    width: 34px;
-    height: 34px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.os-app-icon .app-emoji img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-    display: block;
 }
 
 .os-app-icon .app-name {
-    width: 100%;
     font-size: 12px;
     font-weight: 600;
     text-align: center;
     line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 #dockBar {
@@ -3779,7 +3659,6 @@ body.low-spec .tab-content.tab-leave > * > * {
 
     #desktopAppsGrid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        grid-auto-rows: 100px;
         gap: 12px 8px;
     }
 
@@ -3945,154 +3824,172 @@ body.low-spec .tab-content.tab-leave > * > * {
     </nav>
 
     <div id="settingsOverlay" class="full-page-overlay">
-      <button class="close-overlay" id="closeSettings" aria-label="Close Settings"><img src="https://img.icons8.com/fluency-systems-filled/24/delete-sign.png" alt="Close"></button>
+      <button class="close-overlay" id="closeSettings">×</button>
 
       <div class="settings-wrapper">
-        <div class="settings-shell">
-          <aside class="settings-sidebar-nav" aria-label="Settings navigation">
-            <button class="settings-nav-item" id="settingsNavPrefs" data-page="prefs"><img src="https://img.icons8.com/fluency-systems-filled/48/settings.png" alt="">Preferences</button>
-            <button class="settings-nav-item" id="settingsNavTranslate" data-page="translate"><img src="https://img.icons8.com/fluency-systems-filled/48/language.png" alt="">Translate</button>
-            <button class="settings-nav-item" id="settingsNavUpdate" data-page="update"><img src="https://img.icons8.com/fluency-systems-filled/48/available-updates.png" alt="">Check Updates</button>
-            <button class="settings-nav-item" id="settingsNavCommand" data-page="command"><img src="https://img.icons8.com/fluency-systems-filled/48/console.png" alt="">Terminal</button>
-          </aside>
-
-          <section class="settings-content-pane">
-            <div id="settingsMainMenu" class="settings-content-box settings-empty-state">Select a setting to start.</div>
-
-            <div id="pagePrefs" class="settings-content-box hidden-page">
-              <button class="back-btn" id="prefsBackBtn">← System Menu</button>
-              <h2 class="settings-section-title">System Preferences</h2>
-
-              <div class="pref-container">
-                  <div class="pref-card">
-                      <div class="pref-info">
-                          <div class="pref-icon">⚡</div>
-                          <div class="pref-text">
-                              <strong>Performance Mode</strong>
-                              <span>Disables glass blurs and animations for low-end CPUs.</span>
-                          </div>
+          <div id="settingsMainMenu" class="settings-content-box">
+              <h1 class="settings-title">System Settings</h1>
+              <div class="settings-grid">
+                  <button class="menu-item-large" id="menuCommand">
+                      <span class="icon">⌨️</span>
+                      <div class="text-group">
+                          <strong>Terminal</strong>
+                          <span>Execute system codes</span>
                       </div>
-                      <label class="switch">
-                          <input type="checkbox" id="perfToggle">
-                          <span class="slider"></span>
-                      </label>
-                  </div>
-
-                  <div class="pref-card disabled">
-                      <div class="pref-info">
-                          <div class="pref-icon">🔔</div>
-                          <div class="pref-text">
-                              <strong>System Notifications</strong>
-                              <span>Toggle snackbar alerts (Coming Soon).</span>
-                          </div>
+                  </button>
+                  <!-- <button class="menu-item-large" id="menuLock">
+                      <span class="icon">🔒</span>
+                      <div class="text-group">
+                          <strong>Lock</strong>
+                          <span>Secure your session</span>
                       </div>
-                      <div class="lock-status">🔒</div>
-                  </div>
-
-                  <div class="pref-card">
-                      <div class="pref-info">
-                          <div class="pref-icon">✨</div>
-                          <div class="pref-text">
-                              <strong>Motion Fidelity</strong>
-                              <span>Enable Apple-style transitions, depth, and micro-animations.</span>
-                          </div>
+                  </button> -->
+                  <button class="menu-item-large" id="menuSubSettings">
+                      <span class="icon">⚙️</span>
+                      <div class="text-group">
+                          <strong>Preferences</strong>
+                          <span>Performance & UI</span>
                       </div>
-                      <label class="switch">
-                          <input type="checkbox" id="motionToggle" checked>
-                          <span class="slider"></span>
-                      </label>
-                  </div>
+                  </button>
+                  <button class="menu-item-large" id="menuTranslate">
+                      <span class="icon">🌐</span>
+                      <div class="text-group">
+                          <strong>Translate</strong>
+                          <span>Language settings</span>
+                      </div>
+                  </button>
+                  <button class="menu-item-large" id="menuUpdateCheck">
+                      <span class="icon">🔄</span>
+                      <div class="text-group">
+                          <strong>Check Updates</strong>
+                          <span>System version info</span>
+                      </div>
+                  </button>
               </div>
           </div>
 
-            <div id="pageCommand" class="settings-content-box hidden-page">
-                <button class="back-btn" id="commandBackBtn">← System Menu</button>
-                <div class="terminal-header">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                    <span class="terminal-title">bash — system-terminal</span>
-                </div>
-                <div class="terminal-body">
-                    <div class="command-line">
-                        <span class="prompt">user@pld-helper:~$</span>
-                        <input type="text" id="commandInput" placeholder="enter_auth_code" autofocus>
+          <div id="pagePrefs" class="settings-content-box hidden-page">
+            <button class="back-btn" id="prefsBackBtn">← System Menu</button>
+            <h2 class="settings-section-title">System Preferences</h2>
+
+            <div class="pref-container">
+                <div class="pref-card">
+                    <div class="pref-info">
+                        <div class="pref-icon">⚡</div>
+                        <div class="pref-text">
+                            <strong>Performance Mode</strong>
+                            <span>Disables glass blurs and animations for low-end CPUs.</span>
+                        </div>
                     </div>
-                    <button id="commandBtn" class="btn-execute">Execute Command</button>
+                    <label class="switch">
+                        <input type="checkbox" id="perfToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="pref-card disabled">
+                    <div class="pref-info">
+                        <div class="pref-icon">🔔</div>
+                        <div class="pref-text">
+                            <strong>System Notifications</strong>
+                            <span>Toggle snackbar alerts (Coming Soon).</span>
+                        </div>
+                    </div>
+                    <div class="lock-status">🔒</div>
+                </div>
+
+                <div class="pref-card">
+                    <div class="pref-info">
+                        <div class="pref-icon">✨</div>
+                        <div class="pref-text">
+                            <strong>Motion Fidelity</strong>
+                            <span>Enable Apple-style transitions, depth, and micro-animations.</span>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="motionToggle" checked>
+                        <span class="slider"></span>
+                    </label>
                 </div>
             </div>
-
-            <div id="pageTranslate" class="settings-content-box hidden-page">
-              <button class="back-btn" id="translateBackBtn">← System Menu</button>
-              <h2 class="settings-section-title">Language Settings</h2>
-
-              <div class="translate-container">
-                  <div class="translate-card" id="englishLangCard">
-                      <div class="translate-info">
-                          <div class="translate-icon">🇺🇸</div>
-                          <div class="translate-text">
-                              <strong>English</strong>
-                              <span>Switch to English interface</span>
-                          </div>
-                      </div>
-                      <div class="language-selector">
-                          <div class="language-name">English</div>
-                          <div class="checkmark" id="englishCheck">✓</div>
-                      </div>
-                  </div>
-
-                  <div class="translate-card" id="chineseLangCard">
-                      <div class="translate-info">
-                          <div class="translate-icon">🇨🇳</div>
-                          <div class="translate-text">
-                              <strong>Chinese</strong>
-                              <span>切换到中文界面</span>
-                          </div>
-                      </div>
-                      <div class="language-selector">
-                          <div class="language-name">中文</div>
-                          <div class="checkmark" id="chineseCheck">✓</div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-          <div id="pageUpdateCheck" class="settings-content-box hidden-page">
-              <button class="back-btn" id="updateCheckBackBtn">← System Menu</button>
-              <h2 class="settings-section-title">Check for Updates</h2>
-
-              <div class="update-card">
-                  <h3>System Version Information</h3>
-                  <p class="update-info">Current Version: <span id="currentVersion" class="update-badge">v6</span></p>
-                  <div class="update-action">
-                      <button id="checkUpdateBtn" class="update-check-btn">Check Now</button>
-                  </div>
-                  <div id="updateResult" class="update-result"></div>
-              </div>
-          </div>
-          </section>
         </div>
-      </div>      </div>
+
+          <div id="pageCommand" class="settings-content-box hidden-page">
+              <button class="back-btn" id="commandBackBtn">← System Menu</button>
+              <div class="terminal-header">
+                  <span class="dot red"></span>
+                  <span class="dot yellow"></span>
+                  <span class="dot green"></span>
+                  <span class="terminal-title">bash — system-terminal</span>
+              </div>
+              <div class="terminal-body">
+                  <div class="command-line">
+                      <span class="prompt">user@pld-helper:~$</span>
+                      <input type="text" id="commandInput" placeholder="enter_auth_code" autofocus>
+                  </div>
+                  <button id="commandBtn" class="btn-execute">Execute Command</button>
+              </div>
+          </div>
+
+          <div id="pageTranslate" class="settings-content-box hidden-page">
+            <button class="back-btn" id="translateBackBtn">← System Menu</button>
+            <h2 class="settings-section-title">Language Settings</h2>
+
+            <div class="translate-container">
+                <div class="translate-card" id="englishLangCard">
+                    <div class="translate-info">
+                        <div class="translate-icon">🇺🇸</div>
+                        <div class="translate-text">
+                            <strong>English</strong>
+                            <span>Switch to English interface</span>
+                        </div>
+                    </div>
+                    <div class="language-selector">
+                        <div class="language-name">English</div>
+                        <div class="checkmark" id="englishCheck">✓</div>
+                    </div>
+                </div>
+
+                <div class="translate-card" id="chineseLangCard">
+                    <div class="translate-info">
+                        <div class="translate-icon">🇨🇳</div>
+                        <div class="translate-text">
+                            <strong>Chinese</strong>
+                            <span>切换到中文界面</span>
+                        </div>
+                    </div>
+                    <div class="language-selector">
+                        <div class="language-name">中文</div>
+                        <div class="checkmark" id="chineseCheck">✓</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pageUpdateCheck" class="settings-content-box hidden-page">
+            <button class="back-btn" id="updateCheckBackBtn">← System Menu</button>
+            <h2 class="settings-section-title">Check for Updates</h2>
+
+            <div class="update-card">
+                <h3>System Version Information</h3>
+                <p class="update-info">Current Version: <span id="currentVersion" class="update-badge">v6</span></p>
+                <div class="update-action">
+                    <button id="checkUpdateBtn" class="update-check-btn">Check Now</button>
+                </div>
+                <div id="updateResult" class="update-result"></div>
+            </div>
+        </div>
+      </div>
   </div>
 
     <main class="main-content">
 
       <section id="osShell" class="os-shell" aria-label="ArchOS Desktop">
         <div id="desktopArea">
-          <div id="desktopAppsGrid" aria-label="Desktop apps">
-            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="math"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/calculator.png" alt=""></span><span class="app-name">Math Calculator</span></button></div>
-            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="prefs"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/settings.png" alt=""></span><span class="app-name">Settings</span></button></div>
-            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="about"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/info.png" alt=""></span><span class="app-name">About</span></button></div>
-            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="notes"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/note.png" alt=""></span><span class="app-name">Notes</span></button></div>
-            <div class="desktop-slot"><button type="button" class="os-app-icon desktop-app-icon" data-app-id="terminal"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/console.png" alt=""></span><span class="app-name">Terminal</span></button></div>
-          </div>
+          <div id="desktopAppsGrid" aria-label="Desktop apps"></div>
         </div>
         <div id="dockBar" aria-label="Dock">
-          <div id="dockAppsGrid">
-            <button type="button" class="os-app-icon dock-app-icon" data-app-id="math"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/calculator.png" alt=""></span><span class="app-name">Math Calculator</span></button>
-            <button type="button" class="os-app-icon dock-app-icon" data-app-id="prefs"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/settings.png" alt=""></span><span class="app-name">Settings</span></button>
-            <button type="button" class="os-app-icon dock-app-icon" data-app-id="terminal"><span class="app-emoji"><img src="https://img.icons8.com/fluency-systems-filled/48/console.png" alt=""></span><span class="app-name">Terminal</span></button>
-          </div>
+          <div id="dockAppsGrid"></div>
         </div>
       </section>
 
@@ -4408,14 +4305,12 @@ body.low-spec .tab-content.tab-leave > * > * {
       let commandHistory = [];
       let openSettingsOverlayFn = null;
       let closeSettingsOverlayFn = null;
-      const DESKTOP_SLOT_COUNT = 48;
-      let desktopLayout = [];
       const appsRegistry = [
-          { id: 'math', name: 'Math Calculator', icon: '🧮', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/calculator.png', launcher: 'openMath', dock: true },
-          { id: 'prefs', name: 'Settings', icon: '⚙️', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/settings.png', launcher: 'openSettings', dock: true },
-          { id: 'about', name: 'About', icon: 'ℹ️', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/info.png', launcher: 'openAbout', dock: false },
-          { id: 'notes', name: 'Notes', icon: '📝', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/note.png', launcher: 'openNotes', dock: false },
-          { id: 'terminal', name: 'Terminal', icon: '⌨️', iconUrl: 'https://img.icons8.com/fluency-systems-filled/48/console.png', launcher: 'openTerminal', dock: true }
+          { id: 'math', name: 'Math Calculator', icon: '🧮', launcher: 'openMath', dock: true },
+          { id: 'prefs', name: 'Settings', icon: '⚙️', launcher: 'openSettings', dock: true },
+          { id: 'about', name: 'About', icon: 'ℹ️', launcher: 'openAbout', dock: false },
+          { id: 'notes', name: 'Notes', icon: '📝', launcher: 'openNotes', dock: false },
+          { id: 'terminal', name: 'Terminal', icon: '⌨️', launcher: 'openTerminal', dock: true }
       ];
       const ARCH_RECOVERY_KEY = 'archRecoveryV1';
       const ARCH_RECOVERY_MAX_HISTORY = 30;
@@ -5451,19 +5346,6 @@ body.low-spec .tab-content.tab-leave > * > * {
     // ==========================================
 
     document.addEventListener("DOMContentLoaded", () => {
-        const failsafeBootTimer = window.setTimeout(() => {
-            const appShell = document.querySelector('.app-container');
-            if (appShell && !appShell.classList.contains('app-ready')) {
-                appShell.classList.add('app-ready', 'force-visible');
-            }
-            const introOverlay = document.getElementById('intro-screen');
-            if (introOverlay && introOverlay.style.display !== 'none') {
-                introOverlay.classList.add('fade-out');
-                window.setTimeout(() => {
-                    introOverlay.style.display = 'none';
-                }, 220);
-            }
-        }, 2600);
 
         // --- A. LOAD GAME ---
         // loadGame();
@@ -5487,7 +5369,6 @@ body.low-spec .tab-content.tab-leave > * > * {
                     }
                     setTimeout(() => {
                         if (app) app.classList.add('app-ready');
-                        window.clearTimeout(failsafeBootTimer);
                         intro.classList.add('fade-out');
                         setTimeout(() => {
                             intro.style.display = 'none';
@@ -5709,11 +5590,10 @@ body.low-spec .tab-content.tab-leave > * > * {
             settingsOverlay.style.display = 'flex';
 
             if (mainMenu) {
-                mainMenu.style.display = 'grid';
+                mainMenu.style.display = 'block';
                 mainMenu.classList.remove('hidden-page');
             }
             Object.values(subPages).forEach(p => { if (p) p.classList.add('hidden-page'); });
-            document.querySelectorAll('.settings-nav-item.active').forEach(el => el.classList.remove('active'));
 
           requestAnimationFrame(() => {
               settingsOverlay.classList.add('active');
@@ -5773,73 +5653,35 @@ body.low-spec .tab-content.tab-leave > * > * {
             };
         }
 
-        let activeSettingsPage = null;
-        const settingsPageOrder = ['prefs', 'translate', 'update', 'command'];
-        const settingsNavItems = Array.from(document.querySelectorAll('.settings-nav-item'));
-
-        const updateSettingsNavState = (pageId) => {
-            settingsNavItems.forEach((item) => {
-                item.classList.toggle('active', item.dataset.page === pageId);
-            });
+        // Helper to switch pages
+        const showSubPage = (pageId) => {
+            if(mainMenu) {
+                mainMenu.style.display = 'none';
+                mainMenu.classList.add('hidden-page');
+            }
+            if(subPages[pageId]) subPages[pageId].classList.remove('hidden-page');
         };
 
         const showMainMenu = () => {
-            Object.values(subPages).forEach(p => {
-                if (p) {
-                    p.classList.add('hidden-page');
-                    p.classList.remove('settings-page-enter-up', 'settings-page-enter-down', 'settings-page-leave-up', 'settings-page-leave-down');
-                }
-            });
-            if (mainMenu) {
+            Object.values(subPages).forEach(p => { if(p) p.classList.add('hidden-page'); });
+            if(mainMenu) {
                 mainMenu.classList.remove('hidden-page');
-                mainMenu.style.display = 'grid';
+                mainMenu.style.display = 'block';
             }
-            activeSettingsPage = null;
-            updateSettingsNavState(null);
         };
 
-        const showSubPage = (nextPageId) => {
-            const nextPage = subPages[nextPageId];
-            if (!nextPage) return;
-
-            const prevPageId = activeSettingsPage;
-            const prevPage = prevPageId ? subPages[prevPageId] : null;
-            const nextIndex = settingsPageOrder.indexOf(nextPageId);
-            const prevIndex = settingsPageOrder.indexOf(prevPageId);
-            const isForward = prevPageId == null ? true : nextIndex >= prevIndex;
-
-            if (mainMenu) {
-                mainMenu.classList.add('hidden-page');
-                mainMenu.style.display = 'none';
-            }
-
-            if (prevPage && prevPage !== nextPage) {
-                prevPage.classList.remove('settings-page-enter-up', 'settings-page-enter-down');
-                prevPage.classList.add(isForward ? 'settings-page-leave-up' : 'settings-page-leave-down');
-                window.setTimeout(() => {
-                    prevPage.classList.add('hidden-page');
-                    prevPage.classList.remove('settings-page-leave-up', 'settings-page-leave-down');
-                }, 220);
-            } else if (prevPage === nextPage) {
-                return;
-            }
-
-            nextPage.classList.remove('hidden-page', 'settings-page-leave-up', 'settings-page-leave-down');
-            nextPage.classList.add(isForward ? 'settings-page-enter-up' : 'settings-page-enter-down');
-            window.setTimeout(() => {
-                nextPage.classList.remove('settings-page-enter-up', 'settings-page-enter-down');
-            }, 320);
-
-            activeSettingsPage = nextPageId;
-            updateSettingsNavState(nextPageId);
+        // Bind Sub-Menu Buttons
+        const menuBtnMap = {
+            'menuSubSettings': 'prefs',
+            'menuCommand': 'command',
+            'menuTranslate': 'translate',
+            'menuUpdateCheck': 'update'
         };
 
-        settingsNavItems.forEach((item) => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                showSubPage(item.dataset.page);
-            });
-        });
+        for(const [btnId, pageKey] of Object.entries(menuBtnMap)) {
+            const btn = document.getElementById(btnId);
+            if(btn) btn.onclick = (e) => { e.preventDefault(); showSubPage(pageKey); };
+        }
 
         // Bind Back Buttons
         const backBtnMap = {
@@ -5848,13 +5690,13 @@ body.low-spec .tab-content.tab-leave > * > * {
             'translateBackBtn': true,
             'updateCheckBackBtn': true
         };
-        for (const btnId in backBtnMap) {
+        for(const btnId in backBtnMap) {
             const btn = document.getElementById(btnId);
-            if (btn) btn.onclick = (e) => {
-                e.preventDefault();
-                suppressSettingsRippleUntil = performance.now() + 280;
-                showMainMenu();
-            };
+          if(btn) btn.onclick = (e) => {
+              e.preventDefault();
+              suppressSettingsRippleUntil = performance.now() + 280;
+              showMainMenu();
+          };
         }
 
         // --- G. SETTINGS SPECIFIC LOGIC ---
@@ -5979,70 +5821,31 @@ body.low-spec .tab-content.tab-leave > * > * {
         }, 360);
     }
 
-
-    function bindFallbackAppIconLaunchers() {
-        document.querySelectorAll('#desktopAppsGrid .os-app-icon, #dockAppsGrid .os-app-icon').forEach((btn) => {
-            if (btn.dataset.bound === '1') return;
-            const appId = btn.dataset.appId;
-            if (!appId) return;
-            btn.dataset.bound = '1';
-            btn.addEventListener('click', () => launchApp(appId));
-        });
-    }
-
-    function initializeDesktopLayout() {
-        const appIds = appsRegistry.map(app => app.id);
-        if (!desktopLayout.length) {
-            desktopLayout = [...appIds];
-        }
-
-        desktopLayout = desktopLayout.filter((appId) => appIds.includes(appId));
-        appIds.forEach((appId) => {
-            if (!desktopLayout.includes(appId)) desktopLayout.push(appId);
-        });
-
-        while (desktopLayout.length < DESKTOP_SLOT_COUNT) desktopLayout.push(null);
-        if (desktopLayout.length > DESKTOP_SLOT_COUNT) desktopLayout.length = DESKTOP_SLOT_COUNT;
-    }
-
     function initializeDesktopShell() {
         const desktopGrid = document.getElementById('desktopAppsGrid');
         const dockGrid = document.getElementById('dockAppsGrid');
         if (!desktopGrid || !dockGrid) return;
 
-        bindFallbackAppIconLaunchers();
-        initializeDesktopLayout();
-        renderDesktopGrid(desktopGrid);
-        renderDockGrid(dockGrid);
+        renderAppsGrid(desktopGrid, appsRegistry, 'desktop');
+        renderAppsGrid(dockGrid, appsRegistry.filter(app => app.dock), 'dock');
     }
 
-    function swapDockOrder(sourceId, targetId) {
+    function swapAppOrder(sourceId, targetId, mode) {
         if (!sourceId || !targetId || sourceId === targetId) return;
-        const dockApps = appsRegistry.filter((app) => app.dock).map((app) => app.id);
-        if (!dockApps.includes(sourceId) || !dockApps.includes(targetId)) return;
 
         const sourceIndex = appsRegistry.findIndex(app => app.id === sourceId);
         const targetIndex = appsRegistry.findIndex(app => app.id === targetId);
         if (sourceIndex < 0 || targetIndex < 0) return;
 
+        if (mode === 'dock') {
+            if (!appsRegistry[sourceIndex].dock || !appsRegistry[targetIndex].dock) return;
+        }
+
         [appsRegistry[sourceIndex], appsRegistry[targetIndex]] = [appsRegistry[targetIndex], appsRegistry[sourceIndex]];
         initializeDesktopShell();
     }
 
-    function moveDesktopAppToSlot(sourceAppId, targetSlotIndex) {
-        if (!sourceAppId) return;
-        if (targetSlotIndex < 0 || targetSlotIndex >= desktopLayout.length) return;
-
-        const sourceSlotIndex = desktopLayout.findIndex((id) => id === sourceAppId);
-        if (sourceSlotIndex < 0 || sourceSlotIndex === targetSlotIndex) return;
-
-        const targetOccupant = desktopLayout[targetSlotIndex];
-        desktopLayout[targetSlotIndex] = sourceAppId;
-        desktopLayout[sourceSlotIndex] = targetOccupant || null;
-        initializeDesktopShell();
-    }
-
-    function bindDockDragAndDrop(btn, app) {
+    function bindAppDragAndDrop(btn, app, mode) {
         btn.draggable = true;
         btn.addEventListener('dragstart', (event) => {
             btn.classList.add('dragging');
@@ -6052,73 +5855,42 @@ body.low-spec .tab-content.tab-leave > * > * {
 
         btn.addEventListener('dragend', () => {
             btn.classList.remove('dragging');
-            document.querySelectorAll('#dockAppsGrid .os-app-icon.drop-target').forEach(node => node.classList.remove('drop-target'));
+            document.querySelectorAll('.os-app-icon.drop-target').forEach(node => node.classList.remove('drop-target'));
         });
 
         btn.addEventListener('dragover', (event) => {
             event.preventDefault();
+            if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
             btn.classList.add('drop-target');
         });
 
-        btn.addEventListener('dragleave', () => btn.classList.remove('drop-target'));
+        btn.addEventListener('dragleave', () => {
+            btn.classList.remove('drop-target');
+        });
+
         btn.addEventListener('drop', (event) => {
             event.preventDefault();
             btn.classList.remove('drop-target');
             const sourceId = event.dataTransfer?.getData('text/plain');
-            swapDockOrder(sourceId, app.id);
-        });
-    }
-
-    function renderDockGrid(container) {
-        container.innerHTML = '';
-        appsRegistry.filter(app => app.dock).forEach((app) => {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'os-app-icon dock-app-icon';
-            btn.dataset.appId = app.id;
-            btn.innerHTML = `
-              <span class="app-emoji" aria-hidden="true">${app.iconUrl ? `<img src="${app.iconUrl}" alt="">` : app.icon}</span>
-              <span class="app-name">${app.name}</span>
-            `;
-            btn.addEventListener('click', () => launchApp(app.id));
-            bindDockDragAndDrop(btn, app);
-            container.appendChild(btn);
-        });
-    }
-
-    function bindDesktopSlotDrop(slotEl, slotIndex) {
-        slotEl.addEventListener('dragover', (event) => {
-            event.preventDefault();
-            slotEl.classList.add('drop-target');
+            swapAppOrder(sourceId, app.id, mode);
         });
 
-        slotEl.addEventListener('dragleave', () => slotEl.classList.remove('drop-target'));
-
-        slotEl.addEventListener('drop', (event) => {
-            event.preventDefault();
-            slotEl.classList.remove('drop-target');
-            const sourceId = event.dataTransfer?.getData('text/plain');
-            moveDesktopAppToSlot(sourceId, slotIndex);
-        });
-    }
-
-    function bindDesktopTouchMove(btn, appId) {
         let longPressTimer = null;
         let touchDragSource = null;
 
         btn.addEventListener('pointerdown', (event) => {
             if (event.pointerType !== 'touch') return;
             longPressTimer = window.setTimeout(() => {
-                touchDragSource = appId;
+                touchDragSource = app.id;
                 btn.classList.add('dragging');
             }, 280);
         });
 
         btn.addEventListener('pointermove', (event) => {
             if (event.pointerType !== 'touch' || !touchDragSource) return;
-            const slot = document.elementFromPoint(event.clientX, event.clientY)?.closest('.desktop-slot');
-            document.querySelectorAll('.desktop-slot.drop-target').forEach(node => node.classList.remove('drop-target'));
-            if (slot) slot.classList.add('drop-target');
+            const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.os-app-icon');
+            document.querySelectorAll('.os-app-icon.drop-target').forEach(node => node.classList.remove('drop-target'));
+            if (target && target.dataset.appId !== touchDragSource) target.classList.add('drop-target');
         });
 
         const releaseTouchDrag = (event) => {
@@ -6128,58 +5900,35 @@ body.low-spec .tab-content.tab-leave > * > * {
             }
             if (!touchDragSource) return;
 
-            const slot = document.elementFromPoint(event.clientX, event.clientY)?.closest('.desktop-slot');
-            const slotIndex = Number(slot?.dataset?.slotIndex);
-            if (Number.isInteger(slotIndex)) moveDesktopAppToSlot(touchDragSource, slotIndex);
+            const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.os-app-icon');
+            const targetId = target?.dataset?.appId;
+            if (targetId && targetId !== touchDragSource) {
+                swapAppOrder(touchDragSource, targetId, mode);
+            }
 
             touchDragSource = null;
             btn.classList.remove('dragging');
-            document.querySelectorAll('.desktop-slot.drop-target').forEach(node => node.classList.remove('drop-target'));
+            document.querySelectorAll('.os-app-icon.drop-target').forEach(node => node.classList.remove('drop-target'));
         };
 
         btn.addEventListener('pointerup', releaseTouchDrag);
         btn.addEventListener('pointercancel', releaseTouchDrag);
     }
 
-    function renderDesktopGrid(container) {
+    function renderAppsGrid(container, apps, mode) {
         container.innerHTML = '';
-
-        desktopLayout.forEach((appId, slotIndex) => {
-            const slot = document.createElement('div');
-            slot.className = 'desktop-slot';
-            slot.dataset.slotIndex = String(slotIndex);
-            bindDesktopSlotDrop(slot, slotIndex);
-
-            if (appId) {
-                const app = appsRegistry.find(item => item.id === appId);
-                if (app) {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'os-app-icon desktop-app-icon';
-                    btn.dataset.appId = app.id;
-                    btn.draggable = true;
-                    btn.innerHTML = `
-                      <span class="app-emoji" aria-hidden="true">${app.iconUrl ? `<img src="${app.iconUrl}" alt="">` : app.icon}</span>
-                      <span class="app-name" title="${app.name}">${app.name}</span>
-                    `;
-
-                    btn.addEventListener('click', () => launchApp(app.id));
-                    btn.addEventListener('dragstart', (event) => {
-                        btn.classList.add('dragging');
-                        event.dataTransfer?.setData('text/plain', app.id);
-                        event.dataTransfer.effectAllowed = 'move';
-                    });
-                    btn.addEventListener('dragend', () => {
-                        btn.classList.remove('dragging');
-                        document.querySelectorAll('.desktop-slot.drop-target').forEach(node => node.classList.remove('drop-target'));
-                    });
-
-                    bindDesktopTouchMove(btn, app.id);
-                    slot.appendChild(btn);
-                }
-            }
-
-            container.appendChild(slot);
+        apps.forEach((app) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `os-app-icon ${mode}-app-icon`;
+            btn.dataset.appId = app.id;
+            btn.innerHTML = `
+              <span class="app-emoji" aria-hidden="true">${app.icon}</span>
+              <span class="app-name">${app.name}</span>
+            `;
+            btn.addEventListener('click', () => launchApp(app.id));
+            bindAppDragAndDrop(btn, app, mode);
+            container.appendChild(btn);
         });
     }
 
@@ -6783,7 +6532,7 @@ body.low-spec .tab-content.tab-leave > * > * {
         closeBtn.type = 'button';
         closeBtn.className = 'system-window-close';
         closeBtn.setAttribute('aria-label', `Close ${titleText}`);
-        closeBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M18.3 5.71a1 1 0 0 0-1.42 0L12 10.59 7.12 5.71A1 1 0 1 0 5.7 7.13L10.59 12 5.7 16.88a1 1 0 1 0 1.42 1.42L12 13.41l4.88 4.89a1 1 0 0 0 1.42-1.42L13.41 12l4.89-4.87a1 1 0 0 0 0-1.42Z"/></svg>';
+        closeBtn.textContent = 'x';
 
         const body = document.createElement('div');
         body.className = 'system-window-body';
