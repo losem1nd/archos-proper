@@ -3586,8 +3586,10 @@ body.low-spec .tab-content.tab-leave > * > * {
 #desktopAppsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    grid-auto-rows: 1fr;
     gap: 16px;
-    align-content: start;
+    align-content: center;
+    justify-items: center;
 }
 
 .os-app-icon {
@@ -3599,8 +3601,11 @@ body.low-spec .tab-content.tab-leave > * > * {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     cursor: pointer;
+    width: 100%;
+    aspect-ratio: 1 / 1;
 }
 
 .os-app-icon:hover {
