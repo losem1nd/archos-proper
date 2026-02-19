@@ -2183,6 +2183,88 @@ body.lock-selection textarea {
     border-color: #3f8b78;
 }
 
+/* Dynamic app viewport mode: keep engine DOM mounted, only hide it visually */
+body.app-visual-shell-mode .sidebar {
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+body.app-visual-shell-mode .main-content {
+    width: 100%;
+    max-width: 100%;
+}
+
+body.app-visual-shell-mode .main-content > header,
+body.app-visual-shell-mode .main-content > section {
+    max-height: 0 !important;
+    opacity: 0;
+    overflow: hidden;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    pointer-events: none;
+}
+
+.dynamic-app-viewport {
+    position: relative;
+    min-height: clamp(420px, 80vh, 920px);
+    border-radius: 18px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.dynamic-app-viewport.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dynamic-app-shell {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: inherit;
+    background: linear-gradient(160deg, #121827, #1e293b 60%, #0f172a);
+    color: #f8fafc;
+}
+
+.dynamic-app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(8px);
+}
+
+.dynamic-app-header img {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+}
+
+.dynamic-app-body {
+    padding: clamp(14px, 2vw, 28px);
+    overflow: auto;
+}
+
+@media (max-width: 900px) {
+    body.app-visual-shell-mode .app-container {
+        grid-template-rows: 1fr;
+    }
+
+    .dynamic-app-viewport {
+        min-height: 100dvh;
+        border-radius: 0;
+    }
+}
+
 .root-editor-modal {
     position: fixed;
     inset: 0;
@@ -3960,8 +4042,9 @@ body.low-spec .tab-content.tab-leave > * > * {
           </div>
         </div>
       </section>
-
     </main>
+
+    <section id="dynamicAppViewport" class="dynamic-app-viewport hidden" aria-live="polite"></section>
   </div>
 
   <!-- Terminal Overlay -->
@@ -4142,6 +4225,117 @@ body.low-spec .tab-content.tab-leave > * > * {
             language_change_text: '更改语言中', changing_language_text: 'Changing Language'
         }
     };
+
+    const appTemplates = {
+        studyHub: {
+            name: 'Study Hub',
+            icon: 'https://img.icons8.com/fluency/96/app.png',
+            html: `
+                <div class="study-app">
+                    <h1>Study Hub Dashboard</h1>
+                    <p>Pick a module and continue where you left off.</p>
+                    <div class="study-grid">
+                        <article class="study-card" data-module="math">
+                            <h3>Math Lab</h3>
+                            <p>Solve practice tasks with instant hints.</p>
+                            <button type="button" class="open-module-btn">Open</button>
+                        </article>
+                        <article class="study-card" data-module="science">
+                            <h3>Science Notes</h3>
+                            <p>Review key concepts and quick summaries.</p>
+                            <button type="button" class="open-module-btn">Open</button>
+                        </article>
+                        <article class="study-card" data-module="history">
+                            <h3>History Timeline</h3>
+                            <p>Track major events with short references.</p>
+                            <button type="button" class="open-module-btn">Open</button>
+                        </article>
+                    </div>
+                    <p class="module-status" id="moduleStatus">No module selected.</p>
+                </div>
+            `,
+            css: `
+                .study-app { max-width: 980px; margin: 0 auto; }
+                .study-app h1 { margin: 0 0 8px; font-size: clamp(1.4rem, 2.8vw, 2rem); }
+                .study-app p { margin: 0 0 18px; color: rgba(226, 232, 240, 0.9); }
+                .study-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                    gap: 14px;
+                    margin: 16px 0 22px;
+                }
+                .study-card {
+                    background: rgba(30, 41, 59, 0.8);
+                    border: 1px solid rgba(148, 163, 184, 0.3);
+                    border-radius: 14px;
+                    padding: 16px;
+                }
+                .study-card h3 { margin-top: 0; }
+                .open-module-btn {
+                    border: none;
+                    border-radius: 10px;
+                    padding: 10px 14px;
+                    background: #38bdf8;
+                    color: #0f172a;
+                    font-weight: 700;
+                    cursor: pointer;
+                }
+                .module-status {
+                    margin: 0;
+                    padding: 12px 14px;
+                    border-radius: 10px;
+                    background: rgba(15, 23, 42, 0.75);
+                    border: 1px solid rgba(56, 189, 248, 0.45);
+                    font-weight: 600;
+                }
+            `,
+            js: `
+                const statusNode = root.querySelector('#moduleStatus');
+                root.querySelectorAll('.open-module-btn').forEach((button) => {
+                    button.addEventListener('click', () => {
+                        const module = button.closest('.study-card')?.dataset.module || 'unknown';
+                        statusNode.textContent = 'Opened module: ' + module;
+                    });
+                });
+            `
+        }
+    };
+
+    function injectDynamicApp(appId = 'studyHub') {
+        const target = document.getElementById('dynamicAppViewport');
+        const template = appTemplates[appId];
+        if (!target || !template) return;
+
+        document.body.classList.add('app-visual-shell-mode');
+        target.classList.remove('hidden');
+        target.innerHTML = `
+            <div class="dynamic-app-shell">
+                <div class="dynamic-app-header">
+                    <img src="${template.icon}" alt="${template.name} icon">
+                    <strong>${template.name}</strong>
+                </div>
+                <div class="dynamic-app-body" id="dynamicAppBody"></div>
+            </div>
+        `;
+
+        const body = target.querySelector('#dynamicAppBody');
+        body.innerHTML = template.html;
+
+        const styleTag = document.createElement('style');
+        styleTag.id = 'dynamicAppTemplateStyle';
+        styleTag.textContent = template.css;
+        document.getElementById('dynamicAppTemplateStyle')?.remove();
+        target.appendChild(styleTag);
+
+        if (template.js && template.js.trim()) {
+            const scriptTag = document.createElement('script');
+            scriptTag.textContent = `(function(){ const root = document.getElementById('dynamicAppBody'); ${template.js}
+})();`;
+            body.appendChild(scriptTag);
+        }
+
+        requestAnimationFrame(() => target.classList.add('is-visible'));
+    }
 
     // ==========================================
     // 2. CORE HELPER FUNCTIONS
@@ -5126,6 +5320,7 @@ body.low-spec .tab-content.tab-leave > * > * {
         const logo = document.getElementById('intro-logo');
         const loader = document.getElementById('intro-loader');
         const app = document.querySelector('.app-container');
+        injectDynamicApp('studyHub');
 
         if (intro) {
             intro.classList.add('active');
