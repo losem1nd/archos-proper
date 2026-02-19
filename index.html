@@ -3674,6 +3674,91 @@ body.low-spec .tab-content.tab-leave > * > * {
         grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 }
+
+
+/* ===== Desktop Shell Interaction Animations (separate block) ===== */
+:root {
+    --os-ease-apple: cubic-bezier(0.22, 1, 0.36, 1);
+    --os-ease-apple-soft: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.system-window {
+    animation: systemWindowFadeIn 320ms var(--os-ease-apple) both;
+}
+
+.system-window.window-closing {
+    animation: systemWindowFadeOut 240ms var(--os-ease-apple-soft) both;
+}
+
+@keyframes systemWindowFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes systemWindowFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(10px) scale(0.985);
+    }
+}
+
+#settingsOverlay {
+    opacity: 0;
+    transition: opacity 280ms var(--os-ease-apple);
+}
+
+#settingsOverlay.active {
+    opacity: 1;
+}
+
+#settingsOverlay.closing {
+    opacity: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .os-app-icon,
+    .menu-item-large,
+    .terminal-option,
+    .system-window-action,
+    .close-overlay,
+    .dialog-btn {
+        transition:
+            background-color 220ms var(--os-ease-apple-soft),
+            border-color 220ms var(--os-ease-apple-soft),
+            box-shadow 220ms var(--os-ease-apple-soft),
+            opacity 220ms var(--os-ease-apple-soft),
+            transform 220ms var(--os-ease-apple-soft);
+    }
+
+    .os-app-icon:hover,
+    .menu-item-large:hover,
+    .terminal-option:hover,
+    .system-window-action:hover,
+    .dialog-btn:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+}
+
+.os-app-icon.dragging {
+    opacity: 0.72;
+    transform: scale(1.04);
+}
+
+.os-app-icon.drop-target {
+    outline: 2px dashed rgba(186, 217, 255, 0.8);
+    outline-offset: -4px;
+}
+
   </style>
 </head>
 <body class="dark-theme"> 
@@ -4218,13 +4303,14 @@ body.low-spec .tab-content.tab-leave > * > * {
     let motionController = null;
     let motionToggleRafPending = false;
       let commandHistory = [];
+      let openSettingsOverlayFn = null;
+      let closeSettingsOverlayFn = null;
       const appsRegistry = [
-          { id: 'terminal', name: 'Terminal', icon: '⌨️', launcher: 'openTerminal', dock: true },
-          { id: 'updates', name: 'Updates', icon: '🔄', launcher: 'openUpdates', dock: true },
-          { id: 'math', name: 'Math', icon: '🧮', launcher: 'openMath', dock: true },
+          { id: 'math', name: 'Math Calculator', icon: '🧮', launcher: 'openMath', dock: true },
           { id: 'prefs', name: 'Settings', icon: '⚙️', launcher: 'openSettings', dock: true },
           { id: 'about', name: 'About', icon: 'ℹ️', launcher: 'openAbout', dock: false },
-          { id: 'notes', name: 'Notes', icon: '📝', launcher: 'openNotes', dock: false }
+          { id: 'notes', name: 'Notes', icon: '📝', launcher: 'openNotes', dock: false },
+          { id: 'terminal', name: 'Terminal', icon: '⌨️', launcher: 'openTerminal', dock: true }
       ];
       const ARCH_RECOVERY_KEY = 'archRecoveryV1';
       const ARCH_RECOVERY_MAX_HISTORY = 30;
@@ -5515,6 +5601,8 @@ body.low-spec .tab-content.tab-leave > * > * {
           });
         };
 
+        openSettingsOverlayFn = openSettingsOverlay;
+
         const closeSettingsOverlay = () => {
             if (!settingsOverlay) return;
 
@@ -5542,6 +5630,8 @@ body.low-spec .tab-content.tab-leave > * > * {
                 settingsCloseTimer = null;
             }, closeDelay);
         };
+
+        closeSettingsOverlayFn = closeSettingsOverlay;
 
         // Open Settings
         if (settingsMainBtn && settingsOverlay) {
@@ -5736,9 +5826,93 @@ body.low-spec .tab-content.tab-leave > * > * {
         const dockGrid = document.getElementById('dockAppsGrid');
         if (!desktopGrid || !dockGrid) return;
 
-        const dockAppIds = new Set(appsRegistry.filter(app => app.dock).map(app => app.id));
         renderAppsGrid(desktopGrid, appsRegistry, 'desktop');
-        renderAppsGrid(dockGrid, appsRegistry.filter(app => dockAppIds.has(app.id)).slice(0, 5), 'dock');
+        renderAppsGrid(dockGrid, appsRegistry.filter(app => app.dock), 'dock');
+    }
+
+    function swapAppOrder(sourceId, targetId, mode) {
+        if (!sourceId || !targetId || sourceId === targetId) return;
+
+        const sourceIndex = appsRegistry.findIndex(app => app.id === sourceId);
+        const targetIndex = appsRegistry.findIndex(app => app.id === targetId);
+        if (sourceIndex < 0 || targetIndex < 0) return;
+
+        if (mode === 'dock') {
+            if (!appsRegistry[sourceIndex].dock || !appsRegistry[targetIndex].dock) return;
+        }
+
+        [appsRegistry[sourceIndex], appsRegistry[targetIndex]] = [appsRegistry[targetIndex], appsRegistry[sourceIndex]];
+        initializeDesktopShell();
+    }
+
+    function bindAppDragAndDrop(btn, app, mode) {
+        btn.draggable = true;
+        btn.addEventListener('dragstart', (event) => {
+            btn.classList.add('dragging');
+            event.dataTransfer?.setData('text/plain', app.id);
+            event.dataTransfer.effectAllowed = 'move';
+        });
+
+        btn.addEventListener('dragend', () => {
+            btn.classList.remove('dragging');
+            document.querySelectorAll('.os-app-icon.drop-target').forEach(node => node.classList.remove('drop-target'));
+        });
+
+        btn.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+            btn.classList.add('drop-target');
+        });
+
+        btn.addEventListener('dragleave', () => {
+            btn.classList.remove('drop-target');
+        });
+
+        btn.addEventListener('drop', (event) => {
+            event.preventDefault();
+            btn.classList.remove('drop-target');
+            const sourceId = event.dataTransfer?.getData('text/plain');
+            swapAppOrder(sourceId, app.id, mode);
+        });
+
+        let longPressTimer = null;
+        let touchDragSource = null;
+
+        btn.addEventListener('pointerdown', (event) => {
+            if (event.pointerType !== 'touch') return;
+            longPressTimer = window.setTimeout(() => {
+                touchDragSource = app.id;
+                btn.classList.add('dragging');
+            }, 280);
+        });
+
+        btn.addEventListener('pointermove', (event) => {
+            if (event.pointerType !== 'touch' || !touchDragSource) return;
+            const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.os-app-icon');
+            document.querySelectorAll('.os-app-icon.drop-target').forEach(node => node.classList.remove('drop-target'));
+            if (target && target.dataset.appId !== touchDragSource) target.classList.add('drop-target');
+        });
+
+        const releaseTouchDrag = (event) => {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            if (!touchDragSource) return;
+
+            const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.os-app-icon');
+            const targetId = target?.dataset?.appId;
+            if (targetId && targetId !== touchDragSource) {
+                swapAppOrder(touchDragSource, targetId, mode);
+            }
+
+            touchDragSource = null;
+            btn.classList.remove('dragging');
+            document.querySelectorAll('.os-app-icon.drop-target').forEach(node => node.classList.remove('drop-target'));
+        };
+
+        btn.addEventListener('pointerup', releaseTouchDrag);
+        btn.addEventListener('pointercancel', releaseTouchDrag);
     }
 
     function renderAppsGrid(container, apps, mode) {
@@ -5753,6 +5927,7 @@ body.low-spec .tab-content.tab-leave > * > * {
               <span class="app-name">${app.name}</span>
             `;
             btn.addEventListener('click', () => launchApp(app.id));
+            bindAppDragAndDrop(btn, app, mode);
             container.appendChild(btn);
         });
     }
@@ -5764,12 +5939,15 @@ body.low-spec .tab-content.tab-leave > * > * {
         const launchers = {
             openTerminal: () => startTerminalSequence(),
             openSettings: () => {
+                if (typeof openSettingsOverlayFn === 'function') {
+                    openSettingsOverlayFn();
+                    return;
+                }
                 const overlay = document.getElementById('settingsOverlay');
-                if (overlay) overlay.classList.add('active');
-            },
-            openUpdates: () => {
-                const { body } = createSystemWindow('updatesWindow', 'Updates');
-                body.innerHTML = '<h3>System Updates</h3><p>Current branch keeps compatibility with the legacy page while the new desktop shell is active.</p>';
+                if (!overlay) return;
+                overlay.classList.remove('closing');
+                overlay.style.display = 'flex';
+                requestAnimationFrame(() => overlay.classList.add('active'));
             },
             openMath: () => {
                 const { body } = createSystemWindow('mathWindow', 'Math Calculator');
@@ -6246,9 +6424,19 @@ body.low-spec .tab-content.tab-leave > * > * {
         typeLine();
     }
 
+    function animateSystemWindowClose(win, onDone = null) {
+        if (!win) return;
+        if (win.classList.contains('window-closing')) return;
+        win.classList.add('window-closing');
+        window.setTimeout(() => {
+            if (typeof onDone === 'function') onDone();
+            win.remove();
+        }, 240);
+    }
+
     function removeSystemWindow(windowId) {
         const existing = document.getElementById(windowId);
-        if (existing) existing.remove();
+        if (existing) animateSystemWindowClose(existing);
     }
 
     function makeSystemWindowDraggable(win, header, titleEl) {
@@ -6357,7 +6545,7 @@ body.low-spec .tab-content.tab-leave > * > * {
 
         closeBtn.addEventListener('click', (event) => {
             event.stopPropagation();
-            win.remove();
+            animateSystemWindowClose(win);
         });
 
         makeSystemWindowDraggable(win, header, title);
