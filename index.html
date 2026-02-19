@@ -1048,7 +1048,7 @@ body.dark-theme .search-bar { background: rgba(255,255,255,0.1); }
     position: relative;
 }
 
-.hidden-page { display: none; }
+.hidden-page { display: none !important; }
 
 /* Wide Navigation Items */
 .menu-item-large {
@@ -3586,8 +3586,10 @@ body.low-spec .tab-content.tab-leave > * > * {
 #desktopAppsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    grid-auto-rows: 1fr;
     gap: 16px;
-    align-content: start;
+    align-content: center;
+    justify-items: center;
 }
 
 .os-app-icon {
@@ -3599,8 +3601,14 @@ body.low-spec .tab-content.tab-leave > * > * {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     cursor: pointer;
+}
+
+#desktopAppsGrid .os-app-icon {
+    width: 100%;
+    aspect-ratio: 1 / 1;
 }
 
 .os-app-icon:hover {
@@ -3609,6 +3617,12 @@ body.low-spec .tab-content.tab-leave > * > * {
 
 .os-app-icon .app-emoji {
     font-size: 30px;
+}
+
+.os-app-icon .app-icon-img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
 }
 
 .os-app-icon .app-name {
@@ -3623,24 +3637,42 @@ body.low-spec .tab-content.tab-leave > * > * {
     left: 18px;
     right: 18px;
     bottom: max(12px, env(safe-area-inset-bottom));
+    height: 68px;
+    max-height: 68px;
     border-radius: 20px;
-    padding: 10px 14px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
     background: rgba(18, 26, 44, 0.55);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.16);
     box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
 }
 
 #dockAppsGrid {
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     gap: 6px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 #dockAppsGrid .os-app-icon {
-    min-width: 72px;
-    padding: 8px 6px;
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    padding: 4px;
+    gap: 2px;
+    flex: 0 0 auto;
+}
+
+#dockAppsGrid .os-app-icon .app-name {
+    display: none;
 }
 
 @media (max-width: 768px) {
@@ -3665,6 +3697,8 @@ body.low-spec .tab-content.tab-leave > * > * {
     #dockBar {
         left: 8px;
         right: 8px;
+        height: 64px;
+        max-height: 64px;
         border-radius: 18px;
     }
 }
@@ -3723,6 +3757,111 @@ body.low-spec .tab-content.tab-leave > * > * {
 
 #settingsOverlay.closing {
     opacity: 0;
+}
+
+#settingsOverlay .close-overlay {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    left: auto;
+    z-index: 3;
+}
+
+.settings-layout {
+    width: min(1100px, calc(100vw - 40px));
+    max-height: calc(100vh - 56px);
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 0;
+    overflow: hidden;
+    border-radius: 18px;
+}
+
+.settings-sidepanel {
+    background: rgba(10, 20, 40, 0.75);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 22px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-nav-item {
+    border: 0;
+    background: transparent;
+    color: #dbe7ff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.settings-nav-item.active {
+    background: rgba(56, 132, 255, 0.35);
+    box-shadow: inset 0 0 0 1px rgba(125, 180, 255, 0.5);
+}
+
+.settings-content-panel {
+    position: relative;
+    padding: 24px;
+    min-height: 520px;
+    overflow: auto;
+}
+
+.settings-empty-state {
+    height: 100%;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b8caea;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.settings-page-pane {
+    animation: settingsPaneFadeIn 260ms ease, settingsPaneSlideUp 260ms ease;
+}
+
+.settings-page-pane.leaving {
+    animation: settingsPaneFadeOut 180ms ease, settingsPaneSlideDown 180ms ease;
+}
+
+.pref-icon img,
+.translate-icon img {
+    display: block;
+}
+
+@keyframes settingsPaneFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes settingsPaneFadeOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes settingsPaneSlideUp { from { transform: translateY(10px); } to { transform: translateY(0); } }
+@keyframes settingsPaneSlideDown { from { transform: translateY(0); } to { transform: translateY(10px); } }
+
+@media (max-width: 768px) {
+    .settings-layout {
+        width: min(96vw, 96vw);
+        max-height: calc(100vh - 24px);
+        grid-template-columns: 1fr;
+    }
+
+    .settings-sidepanel {
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .settings-content-panel {
+        min-height: 340px;
+    }
+
+    .settings-empty-state {
+        min-height: 200px;
+        font-size: 18px;
+    }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -3819,166 +3958,145 @@ body.low-spec .tab-content.tab-leave > * > * {
       </ul>
 
       <div class="sidebar-footer">
-        <button id="settingsMainBtn" class="btn-settings-toggle">⚙️ Settings</button>
+        <button id="settingsMainBtn" class="btn-settings-toggle"><img src="https://img.icons8.com/color/32/settings--v1.png" alt="" width="16" height="16"> Settings</button>
     </div>
     </nav>
 
     <div id="settingsOverlay" class="full-page-overlay">
       <button class="close-overlay" id="closeSettings">×</button>
 
-      <div class="settings-wrapper">
-          <div id="settingsMainMenu" class="settings-content-box">
+      <div class="settings-wrapper settings-layout">
+          <aside class="settings-sidepanel" aria-label="Settings sections">
               <h1 class="settings-title">System Settings</h1>
-              <div class="settings-grid">
-                  <button class="menu-item-large" id="menuCommand">
-                      <span class="icon">⌨️</span>
-                      <div class="text-group">
-                          <strong>Terminal</strong>
-                          <span>Execute system codes</span>
-                      </div>
-                  </button>
-                  <!-- <button class="menu-item-large" id="menuLock">
-                      <span class="icon">🔒</span>
-                      <div class="text-group">
-                          <strong>Lock</strong>
-                          <span>Secure your session</span>
-                      </div>
-                  </button> -->
-                  <button class="menu-item-large" id="menuSubSettings">
-                      <span class="icon">⚙️</span>
-                      <div class="text-group">
-                          <strong>Preferences</strong>
-                          <span>Performance & UI</span>
-                      </div>
-                  </button>
-                  <button class="menu-item-large" id="menuTranslate">
-                      <span class="icon">🌐</span>
-                      <div class="text-group">
-                          <strong>Translate</strong>
-                          <span>Language settings</span>
-                      </div>
-                  </button>
-                  <button class="menu-item-large" id="menuUpdateCheck">
-                      <span class="icon">🔄</span>
-                      <div class="text-group">
-                          <strong>Check Updates</strong>
-                          <span>System version info</span>
-                      </div>
-                  </button>
-              </div>
-          </div>
+              <button class="settings-nav-item" data-settings-page="prefs">
+                  <img src="https://img.icons8.com/color/48/system-task.png" alt="" width="20" height="20">
+                  <span>Preferences</span>
+              </button>
+              <button class="settings-nav-item" data-settings-page="translate">
+                  <img src="https://img.icons8.com/color/48/language.png" alt="" width="20" height="20">
+                  <span>Translate</span>
+              </button>
+              <button class="settings-nav-item" data-settings-page="update">
+                  <img src="https://img.icons8.com/color/48/available-updates.png" alt="" width="20" height="20">
+                  <span>Check Updates</span>
+              </button>
+              <button class="settings-nav-item" data-settings-page="command">
+                  <img src="https://img.icons8.com/color/48/console.png" alt="" width="20" height="20">
+                  <span>Terminal</span>
+              </button>
+          </aside>
 
-          <div id="pagePrefs" class="settings-content-box hidden-page">
-            <button class="back-btn" id="prefsBackBtn">← System Menu</button>
-            <h2 class="settings-section-title">System Preferences</h2>
+          <section class="settings-content-panel" aria-live="polite">
+              <div id="settingsPlaceholder" class="settings-empty-state">Select a setting to start</div>
 
-            <div class="pref-container">
-                <div class="pref-card">
-                    <div class="pref-info">
-                        <div class="pref-icon">⚡</div>
-                        <div class="pref-text">
-                            <strong>Performance Mode</strong>
-                            <span>Disables glass blurs and animations for low-end CPUs.</span>
+              <div id="pagePrefs" class="settings-content-box hidden-page settings-page-pane">
+                <h2 class="settings-section-title">System Preferences</h2>
+
+                <div class="pref-container">
+                    <div class="pref-card">
+                        <div class="pref-info">
+                            <div class="pref-icon"><img src="https://img.icons8.com/color/48/flash-on.png" alt="Performance" width="22" height="22"></div>
+                            <div class="pref-text">
+                                <strong>Performance Mode</strong>
+                                <span>Disables glass blurs and animations for low-end CPUs.</span>
+                            </div>
                         </div>
+                        <label class="switch">
+                            <input type="checkbox" id="perfToggle">
+                            <span class="slider"></span>
+                        </label>
                     </div>
-                    <label class="switch">
-                        <input type="checkbox" id="perfToggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
 
-                <div class="pref-card disabled">
-                    <div class="pref-info">
-                        <div class="pref-icon">🔔</div>
-                        <div class="pref-text">
-                            <strong>System Notifications</strong>
-                            <span>Toggle snackbar alerts (Coming Soon).</span>
+                    <div class="pref-card disabled">
+                        <div class="pref-info">
+                            <div class="pref-icon"><img src="https://img.icons8.com/color/48/appointment-reminders.png" alt="Notifications" width="22" height="22"></div>
+                            <div class="pref-text">
+                                <strong>System Notifications</strong>
+                                <span>Toggle snackbar alerts (Coming Soon).</span>
+                            </div>
                         </div>
+                        <div class="lock-status">🔒</div>
                     </div>
-                    <div class="lock-status">🔒</div>
-                </div>
 
-                <div class="pref-card">
-                    <div class="pref-info">
-                        <div class="pref-icon">✨</div>
-                        <div class="pref-text">
-                            <strong>Motion Fidelity</strong>
-                            <span>Enable Apple-style transitions, depth, and micro-animations.</span>
+                    <div class="pref-card">
+                        <div class="pref-info">
+                            <div class="pref-icon"><img src="https://img.icons8.com/color/48/filled-like.png" alt="Motion" width="22" height="22"></div>
+                            <div class="pref-text">
+                                <strong>Motion Fidelity</strong>
+                                <span>Enable Apple-style transitions, depth, and micro-animations.</span>
+                            </div>
                         </div>
+                        <label class="switch">
+                            <input type="checkbox" id="motionToggle" checked>
+                            <span class="slider"></span>
+                        </label>
                     </div>
-                    <label class="switch">
-                        <input type="checkbox" id="motionToggle" checked>
-                        <span class="slider"></span>
-                    </label>
                 </div>
             </div>
-        </div>
 
-          <div id="pageCommand" class="settings-content-box hidden-page">
-              <button class="back-btn" id="commandBackBtn">← System Menu</button>
-              <div class="terminal-header">
-                  <span class="dot red"></span>
-                  <span class="dot yellow"></span>
-                  <span class="dot green"></span>
-                  <span class="terminal-title">bash — system-terminal</span>
-              </div>
-              <div class="terminal-body">
-                  <div class="command-line">
-                      <span class="prompt">user@pld-helper:~$</span>
-                      <input type="text" id="commandInput" placeholder="enter_auth_code" autofocus>
+              <div id="pageCommand" class="settings-content-box hidden-page settings-page-pane">
+                  <div class="terminal-header">
+                      <span class="dot red"></span>
+                      <span class="dot yellow"></span>
+                      <span class="dot green"></span>
+                      <span class="terminal-title">bash — system-terminal</span>
                   </div>
-                  <button id="commandBtn" class="btn-execute">Execute Command</button>
+                  <div class="terminal-body">
+                      <div class="command-line">
+                          <span class="prompt">user@pld-helper:~$</span>
+                          <input type="text" id="commandInput" placeholder="enter_auth_code" autofocus>
+                      </div>
+                      <button id="commandBtn" class="btn-execute">Execute Command</button>
+                  </div>
               </div>
-          </div>
 
-          <div id="pageTranslate" class="settings-content-box hidden-page">
-            <button class="back-btn" id="translateBackBtn">← System Menu</button>
-            <h2 class="settings-section-title">Language Settings</h2>
+              <div id="pageTranslate" class="settings-content-box hidden-page settings-page-pane">
+                <h2 class="settings-section-title">Language Settings</h2>
 
-            <div class="translate-container">
-                <div class="translate-card" id="englishLangCard">
-                    <div class="translate-info">
-                        <div class="translate-icon">🇺🇸</div>
-                        <div class="translate-text">
-                            <strong>English</strong>
-                            <span>Switch to English interface</span>
+                <div class="translate-container">
+                    <div class="translate-card" id="englishLangCard">
+                        <div class="translate-info">
+                            <div class="translate-icon"><img src="https://img.icons8.com/color/48/great-britain-circular.png" alt="English" width="24" height="24"></div>
+                            <div class="translate-text">
+                                <strong>English</strong>
+                                <span>Switch to English interface</span>
+                            </div>
+                        </div>
+                        <div class="language-selector">
+                            <div class="language-name">English</div>
+                            <div class="checkmark" id="englishCheck">✓</div>
                         </div>
                     </div>
-                    <div class="language-selector">
-                        <div class="language-name">English</div>
-                        <div class="checkmark" id="englishCheck">✓</div>
-                    </div>
-                </div>
 
-                <div class="translate-card" id="chineseLangCard">
-                    <div class="translate-info">
-                        <div class="translate-icon">🇨🇳</div>
-                        <div class="translate-text">
-                            <strong>Chinese</strong>
-                            <span>切换到中文界面</span>
+                    <div class="translate-card" id="chineseLangCard">
+                        <div class="translate-info">
+                            <div class="translate-icon"><img src="https://img.icons8.com/color/48/china-circular.png" alt="Chinese" width="24" height="24"></div>
+                            <div class="translate-text">
+                                <strong>Chinese</strong>
+                                <span>切换到中文界面</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="language-selector">
-                        <div class="language-name">中文</div>
-                        <div class="checkmark" id="chineseCheck">✓</div>
+                        <div class="language-selector">
+                            <div class="language-name">中文</div>
+                            <div class="checkmark" id="chineseCheck">✓</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="pageUpdateCheck" class="settings-content-box hidden-page">
-            <button class="back-btn" id="updateCheckBackBtn">← System Menu</button>
-            <h2 class="settings-section-title">Check for Updates</h2>
+            <div id="pageUpdateCheck" class="settings-content-box hidden-page settings-page-pane">
+                <h2 class="settings-section-title">Check for Updates</h2>
 
-            <div class="update-card">
-                <h3>System Version Information</h3>
-                <p class="update-info">Current Version: <span id="currentVersion" class="update-badge">v6</span></p>
-                <div class="update-action">
-                    <button id="checkUpdateBtn" class="update-check-btn">Check Now</button>
+                <div class="update-card">
+                    <h3>System Version Information</h3>
+                    <p class="update-info">Current Version: <span id="currentVersion" class="update-badge">v6</span></p>
+                    <div class="update-action">
+                        <button id="checkUpdateBtn" class="update-check-btn">Check Now</button>
+                    </div>
+                    <div id="updateResult" class="update-result"></div>
                 </div>
-                <div id="updateResult" class="update-result"></div>
             </div>
-        </div>
+          </section>
       </div>
   </div>
 
@@ -4306,11 +4424,11 @@ body.low-spec .tab-content.tab-leave > * > * {
       let openSettingsOverlayFn = null;
       let closeSettingsOverlayFn = null;
       const appsRegistry = [
-          { id: 'math', name: 'Math Calculator', icon: '🧮', launcher: 'openMath', dock: true },
-          { id: 'prefs', name: 'Settings', icon: '⚙️', launcher: 'openSettings', dock: true },
-          { id: 'about', name: 'About', icon: 'ℹ️', launcher: 'openAbout', dock: false },
-          { id: 'notes', name: 'Notes', icon: '📝', launcher: 'openNotes', dock: false },
-          { id: 'terminal', name: 'Terminal', icon: '⌨️', launcher: 'openTerminal', dock: true }
+          { id: 'math', name: 'Math Calculator', icon: 'https://img.icons8.com/color/96/calculator.png', launcher: 'openMath', dock: true },
+          { id: 'prefs', name: 'Settings', icon: 'https://img.icons8.com/color/96/settings--v1.png', launcher: 'openSettings', dock: true },
+          { id: 'about', name: 'About', icon: 'https://img.icons8.com/color/96/about.png', launcher: 'openAbout', dock: false },
+          { id: 'notes', name: 'Notes', icon: 'https://img.icons8.com/color/96/note.png', launcher: 'openNotes', dock: false },
+          { id: 'terminal', name: 'Terminal', icon: 'https://img.icons8.com/color/96/console.png', launcher: 'openTerminal', dock: true }
       ];
       const ARCH_RECOVERY_KEY = 'archRecoveryV1';
       const ARCH_RECOVERY_MAX_HISTORY = 30;
@@ -5531,7 +5649,6 @@ body.low-spec .tab-content.tab-leave > * > * {
         const settingsOverlay = document.getElementById('settingsOverlay');
         const settingsMainBtn = document.getElementById('settingsMainBtn');
         const closeSettings = document.getElementById('closeSettings');
-        const mainMenu = document.getElementById('settingsMainMenu');
         const settingsFadeDuration = 300;
         const settingsShapeDuration = 620;
         let settingsCloseTimer = null;
@@ -5561,11 +5678,57 @@ body.low-spec .tab-content.tab-leave > * > * {
 
 
         // Sub-pages
+        const settingsPlaceholder = document.getElementById('settingsPlaceholder');
+        const settingsNavItems = Array.from(document.querySelectorAll('.settings-nav-item'));
         const subPages = {
             prefs: document.getElementById('pagePrefs'),
             command: document.getElementById('pageCommand'),
             translate: document.getElementById('pageTranslate'),
             update: document.getElementById('pageUpdateCheck')
+        };
+
+        let activeSettingsPage = null;
+
+        const hideAllSettingsPages = () => {
+            Object.values(subPages).forEach(page => {
+                if (!page) return;
+                page.classList.add('hidden-page');
+                page.classList.remove('leaving');
+            });
+        };
+
+        const setActiveSettingsNav = (pageKey) => {
+            settingsNavItems.forEach(item => {
+                item.classList.toggle('active', item.dataset.settingsPage === pageKey);
+            });
+        };
+
+        const showSettingsPlaceholder = () => {
+            activeSettingsPage = null;
+            hideAllSettingsPages();
+            setActiveSettingsNav(null);
+            if (settingsPlaceholder) settingsPlaceholder.classList.remove('hidden-page');
+        };
+
+        const showSubPage = (pageId) => {
+            const page = subPages[pageId];
+            if (!page) return;
+
+            const currentPage = activeSettingsPage ? subPages[activeSettingsPage] : null;
+            if (currentPage && currentPage !== page) {
+                currentPage.classList.remove('hidden-page');
+                currentPage.classList.add('leaving');
+                window.setTimeout(() => {
+                    currentPage.classList.add('hidden-page');
+                    currentPage.classList.remove('leaving');
+                }, 170);
+            }
+
+            activeSettingsPage = pageId;
+            hideAllSettingsPages();
+            if (settingsPlaceholder) settingsPlaceholder.classList.add('hidden-page');
+            page.classList.remove('hidden-page');
+            setActiveSettingsNav(pageId);
         };
 
         const openSettingsOverlay = () => {
@@ -5588,12 +5751,7 @@ body.low-spec .tab-content.tab-leave > * > * {
 
             settingsOverlay.classList.remove('closing');
             settingsOverlay.style.display = 'flex';
-
-            if (mainMenu) {
-                mainMenu.style.display = 'block';
-                mainMenu.classList.remove('hidden-page');
-            }
-            Object.values(subPages).forEach(p => { if (p) p.classList.add('hidden-page'); });
+            showSettingsPlaceholder();
 
           requestAnimationFrame(() => {
               settingsOverlay.classList.add('active');
@@ -5653,51 +5811,13 @@ body.low-spec .tab-content.tab-leave > * > * {
             };
         }
 
-        // Helper to switch pages
-        const showSubPage = (pageId) => {
-            if(mainMenu) {
-                mainMenu.style.display = 'none';
-                mainMenu.classList.add('hidden-page');
-            }
-            if(subPages[pageId]) subPages[pageId].classList.remove('hidden-page');
-        };
-
-        const showMainMenu = () => {
-            Object.values(subPages).forEach(p => { if(p) p.classList.add('hidden-page'); });
-            if(mainMenu) {
-                mainMenu.classList.remove('hidden-page');
-                mainMenu.style.display = 'block';
-            }
-        };
-
-        // Bind Sub-Menu Buttons
-        const menuBtnMap = {
-            'menuSubSettings': 'prefs',
-            'menuCommand': 'command',
-            'menuTranslate': 'translate',
-            'menuUpdateCheck': 'update'
-        };
-
-        for(const [btnId, pageKey] of Object.entries(menuBtnMap)) {
-            const btn = document.getElementById(btnId);
-            if(btn) btn.onclick = (e) => { e.preventDefault(); showSubPage(pageKey); };
-        }
-
-        // Bind Back Buttons
-        const backBtnMap = {
-            'prefsBackBtn': true,
-            'commandBackBtn': true,
-            'translateBackBtn': true,
-            'updateCheckBackBtn': true
-        };
-        for(const btnId in backBtnMap) {
-            const btn = document.getElementById(btnId);
-          if(btn) btn.onclick = (e) => {
-              e.preventDefault();
-              suppressSettingsRippleUntil = performance.now() + 280;
-              showMainMenu();
-          };
-        }
+        settingsNavItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageKey = item.dataset.settingsPage;
+                showSubPage(pageKey);
+            });
+        });
 
         // --- G. SETTINGS SPECIFIC LOGIC ---
 
@@ -5922,8 +6042,11 @@ body.low-spec .tab-content.tab-leave > * > * {
             btn.type = 'button';
             btn.className = `os-app-icon ${mode}-app-icon`;
             btn.dataset.appId = app.id;
+            const iconMarkup = app.icon.startsWith('http')
+                ? `<img class="app-icon-img" src="${app.icon}" alt="" loading="lazy">`
+                : `<span class="app-emoji" aria-hidden="true">${app.icon}</span>`;
             btn.innerHTML = `
-              <span class="app-emoji" aria-hidden="true">${app.icon}</span>
+              ${iconMarkup}
               <span class="app-name">${app.name}</span>
             `;
             btn.addEventListener('click', () => launchApp(app.id));
