@@ -493,22 +493,6 @@ html {
         white-space: nowrap;
     }
 
-    /* Settings Toggle (Move to Header or float) */
-    #settingsMainBtn {
-        /* On mobile, we might want this accessible elsewhere, 
-           but for now let's put a floater or hide it inside an overlay */
-        position: fixed;
-        bottom: calc(var(--bottom-nav-height) + 20px);
-        right: 20px;
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        padding: 0;
-        font-size: 24px;
-        z-index: 999;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    }
-
     /* Game Dashboard: Stack Columns */
     .game-dashboard {
         grid-template-columns: 1fr;
@@ -3548,6 +3532,24 @@ body.low-spec .tab-content.tab-leave > * > * {
     }
 }
 
+/* Sidebar disabled globally in desktop-shell mode */
+.sidebar {
+    display: none !important;
+}
+
+.app-container {
+    display: flex;
+    height: 100dvh;
+    min-height: 100dvh;
+}
+
+.main-content {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+}
+
 /* OS shell layout (keep legacy main-content DOM for compatibility) */
 .main-content {
     position: relative;
@@ -3555,14 +3557,16 @@ body.low-spec .tab-content.tab-leave > * > * {
 
 .main-content .os-shell {
     position: relative;
-    min-height: calc(100vh - 36px);
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
     border-radius: 18px;
     overflow: hidden;
     background: radial-gradient(circle at top right, rgba(122, 162, 255, 0.25), transparent 45%),
                 radial-gradient(circle at bottom left, rgba(110, 211, 255, 0.2), transparent 45%),
                 linear-gradient(160deg, #0f1728 0%, #111d31 45%, #0b1120 100%);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 24px 24px 112px;
+    padding: 24px 24px calc(112px + env(safe-area-inset-bottom));
 }
 
 .main-content .header,
@@ -3638,7 +3642,7 @@ body.low-spec .tab-content.tab-leave > * > * {
 @media (max-width: 768px) {
     .main-content .os-shell {
         padding: 16px 12px calc(132px + env(safe-area-inset-bottom));
-        min-height: calc(100vh - 94px);
+        height: 100%;
     }
 
     #desktopAppsGrid {
@@ -3706,7 +3710,8 @@ body.low-spec .tab-content.tab-leave > * > * {
 
   <div class="app-container">
 
-    <nav class="sidebar glass-panel">
+    <!-- Sidebar disabled for desktop shell mode -->
+    <nav class="sidebar glass-panel" hidden aria-hidden="true">
       <div class="logo">PLD Helper</div>
       <ul class="nav-list">
         <li><button class="nav-link active" data-tab="home">Home</button></li>
