@@ -3586,8 +3586,10 @@ body.low-spec .tab-content.tab-leave > * > * {
 #desktopAppsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    grid-auto-rows: 1fr;
     gap: 16px;
-    align-content: start;
+    align-content: center;
+    justify-items: center;
 }
 
 .os-app-icon {
@@ -3599,8 +3601,14 @@ body.low-spec .tab-content.tab-leave > * > * {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     cursor: pointer;
+}
+
+#desktopAppsGrid .os-app-icon {
+    width: 100%;
+    aspect-ratio: 1 / 1;
 }
 
 .os-app-icon:hover {
@@ -3623,24 +3631,42 @@ body.low-spec .tab-content.tab-leave > * > * {
     left: 18px;
     right: 18px;
     bottom: max(12px, env(safe-area-inset-bottom));
+    height: 68px;
+    max-height: 68px;
     border-radius: 20px;
-    padding: 10px 14px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
     background: rgba(18, 26, 44, 0.55);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.16);
     box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
 }
 
 #dockAppsGrid {
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     gap: 6px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 #dockAppsGrid .os-app-icon {
-    min-width: 72px;
-    padding: 8px 6px;
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    padding: 4px;
+    gap: 2px;
+    flex: 0 0 auto;
+}
+
+#dockAppsGrid .os-app-icon .app-name {
+    display: none;
 }
 
 @media (max-width: 768px) {
@@ -3665,6 +3691,8 @@ body.low-spec .tab-content.tab-leave > * > * {
     #dockBar {
         left: 8px;
         right: 8px;
+        height: 64px;
+        max-height: 64px;
         border-radius: 18px;
     }
 }
